@@ -1,0 +1,22 @@
+filter:
+  state_pool_size: 1000
+  number_of_particle: 200
+predictor:
+  maximal_dead_recknoning_travelled_distance: 1.
+  maximal_dead_recknoning_elapsed_time: 1.
+twist_updater:
+  topic: twist
+  minimal_rate: 10.0
+pose_updater:
+  topic: pose
+  minimal_rate: 1.0
+  trigger: once
+range_updater:
+  topic: range
+  minimal_rate: 10.0
+  trigger: always
+leader_twist_updater:
+  topic: leader_twist
+  minimal_rate: 10.0
+
+

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<launch>
+
+   <arg name="leader_robot_name"/>
+   <arg name="follower_robot_name"/>
+   <arg name="config_filename" default="$(find wgs84_path_following)/config/localisation/gps_rtls.yaml"/>
+
+   <arg name="follower_odom_topic" default="/$(arg follower_robot_name)/vehicle_controller/odom"/>
+   <arg name="follower_kinematic_topic" default="/$(arg follower_robot_name)/vehicle_controller/kinematic"/>
+   <arg name="follower_rtls_poll_topic" default="/$(arg follower_robot_name)/rtls/poll"/>
+   <arg name="follower_rtls_range_topic" default="/$(arg follower_robot_name)/rtls/range"/>
+   <arg name="follower_rtls_broadcasted_extra_payload_topic" default="/$(arg follower_robot_name)/rtls/broadcasted_extra_payload"/>
+
+   <arg name="gps_topic" default="/$(arg follower_robot_name)/gps/nmea_sentence"/>
+   <arg name="imu_topic" default="/$(arg follower_robot_name)/imu/data" />
+
+   <group ns="localisation">
+
+      <node pkg="romea_localisation_odo_plugin"
+            nodelet="romea_localisation_odo_plugin/OdoLocalisationPluginNodelet"
+            type="odo_localisation_plugin_node"
+            name="odo_localisation_plugin"
+            output="screen">
+            <remap from="vehicle_controller/odom" to="$(arg follower_odom_topic)"/>
+            <remap from="vehicle_controller/kinematic" to="$(arg follower_kinematic_topic)"/>
+      </node>
+
+      <node pkg="romea_localisation_rtls_plugin"
+            type="robot_to_robot_rtls_localisation_plugin_node"
+            name="robot_to_robot_rtls_localisation_plugin"
+            output="screen">
+            <remap from="~follower/rtls" to="/$(arg follower_robot_name)/rtls"/>
+            <remap from="~leader/rtls" to="/$(arg leader_robot_name)/rtls"/>
+            <remap from="rtls/poll" to="(arg follower_rtls_poll_topic)"/>
+            <remap from="rtls/range" to="(arg follower_rtls_range_topic)"/>
+            <remap from="rtls/broadcasted_extra_payload" to="/$(arg follower_rtls_broadcasted_extra_payload_topic)"/>
+            <param name="base_link_frame" value="/$(arg follower_robot_name)/base_link" type="str"/>
+            <param name="autostart" value="true" type="bool"/>
+            <param name="poll_rate" value="20." type="double"/>
+            <param name="debug" value="true" type="bool"/>
+      </node>
+
+      <node pkg="romea_robot_to_robot_localisation"
+            type="robot_to_robot_kalman_localisation_node"
+            name="robot_to_robot_localisation"
+            output="screen">
+<!--         <remap from="joy" to="/$(arg follower_robot_name)/joy"/>-->
+         <remap from="pose" to="leader_pose"/>
+         <param name="leader_name" value="$(arg leader_robot_name)" type="str"/>
+         <rosparam command="load" file="config_filename"/>
+         <param name="autostart" value="true" type="bool"/>
+         <param name="display" value="true" type="bool"/>
+         <param name="debug" value="true" type="bool"/>
+      </node>
+
+   </group>
+
+</launch>
