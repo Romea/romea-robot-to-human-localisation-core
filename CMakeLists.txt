@@ -57,7 +57,7 @@ if(${ROS_DISTRO} STREQUAL "ROS_GALACTIC")
   add_executable(robot_to_human_localisation_node
     src/robot_to_human_localisation_filter.cpp
     src/robot_to_human_localisation.cpp
-    src/robot_to_human_kalman_localisation_node.cpp)
+    src/robot_to_human_localisation_node.cpp)
 
   target_include_directories(robot_to_human_localisation_node PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
