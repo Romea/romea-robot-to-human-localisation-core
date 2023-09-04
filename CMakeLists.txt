@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(romea_robot_to_human_localisation)
+project(romea_robot_to_human_localisation_core)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
