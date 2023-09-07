@@ -6,7 +6,7 @@
 
 // romea
 #include "romea_common_utils/params/node_parameters.hpp"
-#include "romea_robot_to_human_localisation/robot_to_human_localisation_filter.hpp"
+#include "romea_robot_to_human_localisation_core/robot_to_human_localisation_filter.hpp"
 
 
 namespace romea

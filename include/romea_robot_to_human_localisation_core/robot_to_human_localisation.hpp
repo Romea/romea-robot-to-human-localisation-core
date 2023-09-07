@@ -13,8 +13,8 @@
 #include "romea_common_utils/publishers/diagnostic_publisher.hpp"
 
 // local
-#include "romea_robot_to_human_localisation/robot_to_human_localisation_filter.hpp"
-#include "romea_robot_to_human_localisation/visibility_control.h"
+#include "romea_robot_to_human_localisation_core/robot_to_human_localisation_filter.hpp"
+#include "romea_robot_to_human_localisation_core/visibility_control.h"
 
 namespace romea
 {

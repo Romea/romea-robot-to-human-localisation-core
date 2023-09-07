@@ -9,7 +9,7 @@
 #include "romea_common_utils/publishers/stamped_data_publisher.hpp"
 #include "romea_common_utils/conversions/pose_and_twist2d_conversions.hpp"
 #include "romea_localisation_utils/conversions/localisation_status_conversions.hpp"
-#include "romea_robot_to_human_localisation/robot_to_human_localisation.hpp"
+#include "romea_robot_to_human_localisation_core/robot_to_human_localisation.hpp"
 
 namespace romea
 {

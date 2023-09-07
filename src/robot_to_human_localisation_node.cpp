@@ -17,7 +17,7 @@
 #include <memory>
 
 // local
-#include "romea_robot_to_human_localisation/robot_to_human_localisation.hpp"
+#include "romea_robot_to_human_localisation_core/robot_to_human_localisation.hpp"
 
 
 int main(int argc, char * argv[])
