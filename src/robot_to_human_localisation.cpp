@@ -72,7 +72,7 @@ void R2HLocalisation::make_leader_position_publisher_()
 void R2HLocalisation::make_diagnostic_publisher_()
 {
   diagnostic_publisher_ = make_diagnostic_publisher<DiagnosticReport>(
-    node_, "r2r_localisation", 1.0);
+    node_, "robot_to_human_localisation", 1.0);
 }
 
 //-----------------------------------------------------------------------------

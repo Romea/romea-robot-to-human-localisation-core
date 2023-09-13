@@ -77,7 +77,7 @@ if(${ROS_DISTRO} STREQUAL "ROS_GALACTIC")
     DESTINATION lib/${PROJECT_NAME})
 else()
   rclcpp_components_register_node(${PROJECT_NAME}
-    PLUGIN "romea::R2HKalmanLocalisation"
+    PLUGIN "romea::R2HLocalisation"
     EXECUTABLE robot_to_human_localisation_node
     EXECUTOR "MultiThreadedExecutor"
   )

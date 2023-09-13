@@ -19,11 +19,15 @@ R2HLocalisationFilter::R2HLocalisationFilter(std::shared_ptr<rclcpp::Node> node)
   results_(nullptr),
   updater_interfaces_()
 {
-  RCLCPP_INFO_STREAM(node->get_logger(), " init filter ");
   make_filter_(node);
-  add_twist_updater_interface_(node, "twist_updater");
-  add_range_updater_interface_(node, "position_updater");
-  add_position_updater_interface_(node, "range_updater");
+  add_proprioceptive_updater_interface_<UpdaterInterfaceTwist>(node, "twist_updater");
+  add_proprioceptive_updater_interface_<UpdaterInterfaceLinearSpeed>(node, "linear_speed_updater");
+  add_proprioceptive_updater_interface_<UpdaterInterfaceLinearSpeeds>(
+    node, "linear_speeds_updater");
+  add_proprioceptive_updater_interface_<UpdaterInterfaceAngularSpeed>(
+    node, "angular_speed_updater");
+  add_position_updater_interface_(node, "position_updater");
+  add_range_updater_interface_(node, "range_updater");
   make_results_(node);
 }
 
@@ -56,6 +60,7 @@ void R2HLocalisationFilter::make_filter_(std::shared_ptr<rclcpp::Node> node)
     get_parameter<double>(node, "predictor", "leader_motion_noise_std"));
 
   filter_->registerPredictor(std::move(predictor));
+  RCLCPP_INFO_STREAM(node->get_logger(), "filter: started ");
 }
 
 //-----------------------------------------------------------------------------
@@ -65,24 +70,31 @@ void R2HLocalisationFilter::make_results_(std::shared_ptr<rclcpp::Node> node)
 }
 
 //-----------------------------------------------------------------------------
-void R2HLocalisationFilter::add_twist_updater_interface_(
+template<typename Interface>
+void R2HLocalisationFilter::add_proprioceptive_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
   const std::string & updater_name)
 {
   declare_proprioceptive_updater_parameters(node, updater_name);
-  RCLCPP_INFO_STREAM(node->get_logger(), " init" + updater_name);
 
-  auto updater = make_proprioceptive_updater<UpdaterTwist>(
-    node,
-    updater_name);
+  if (!get_updater_topic_name(node, updater_name).empty()) {
 
-  auto plugin = make_updater_interface<UpdaterPluginTwist>(
-    node,
-    updater_name,
-    filter_,
-    std::move(updater));
+    using Updater = typename Interface::Updater;
+    auto updater = make_proprioceptive_updater<Updater>(
+      node,
+      updater_name);
 
-  updater_interfaces_.push_back(std::move(plugin));
+    auto plugin = make_updater_interface<Interface>(
+      node,
+      updater_name,
+      filter_,
+      std::move(updater));
+
+    updater_interfaces_.push_back(std::move(plugin));
+    RCLCPP_INFO_STREAM(node->get_logger(), updater_name + ": started ");
+  } else {
+    RCLCPP_INFO_STREAM(node->get_logger(), updater_name + ": unconfigured ");
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +102,6 @@ void R2HLocalisationFilter::add_range_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
   const std::string & updater_name)
 {
-  RCLCPP_INFO_STREAM(node->get_logger(), " init" + updater_name);
   declare_exteroceptive_updater_parameters(node, updater_name);
   declare_parameter<bool>(node, updater_name, "use_constraints");
 
@@ -102,13 +113,14 @@ void R2HLocalisationFilter::add_range_updater_interface_(
     get_log_filename(node, updater_name),
     get_parameter<bool>(node, updater_name, "use_constraints"));
 
-  auto plugin = make_updater_interface<UpdaterPluginRange>(
+  auto plugin = make_updater_interface<UpdaterInterfaceRange>(
     node,
     updater_name,
     filter_,
     std::move(updater));
 
   updater_interfaces_.push_back(std::move(plugin));
+  RCLCPP_INFO_STREAM(node->get_logger(), updater_name + ": started ");
 }
 
 
@@ -117,20 +129,20 @@ void R2HLocalisationFilter::add_position_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
   const std::string & updater_name)
 {
-  RCLCPP_INFO_STREAM(node->get_logger(), " init " + updater_name);
   declare_exteroceptive_updater_parameters(node, updater_name);
 
   auto updater = make_exteroceptive_updater<UpdaterPosition, FilterType::KALMAN>(
     node,
     updater_name);
 
-  auto plugin = make_updater_interface<UpdaterPluginPosition>(
+  auto plugin = make_updater_interface<UpdaterInterfacePosition>(
     node,
     updater_name,
     filter_,
     std::move(updater));
 
   updater_interfaces_.push_back(std::move(plugin));
+  RCLCPP_INFO_STREAM(node->get_logger(), updater_name + ": started ");
 }
 
 
