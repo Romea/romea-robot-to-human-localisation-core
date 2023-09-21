@@ -20,14 +20,18 @@ R2HLocalisationFilter::R2HLocalisationFilter(std::shared_ptr<rclcpp::Node> node)
   updater_interfaces_()
 {
   make_filter_(node);
-  add_proprioceptive_updater_interface_<UpdaterInterfaceTwist>(node, "twist_updater");
-  add_proprioceptive_updater_interface_<UpdaterInterfaceLinearSpeed>(node, "linear_speed_updater");
+  add_proprioceptive_updater_interface_<UpdaterInterfaceTwist>(
+    node, "twist_updater", "twist");
+  add_proprioceptive_updater_interface_<UpdaterInterfaceLinearSpeed>(
+    node, "linear_speed_updater", "twist");
   add_proprioceptive_updater_interface_<UpdaterInterfaceLinearSpeeds>(
-    node, "linear_speeds_updater");
+    node, "linear_speeds_updater", "twist");
   add_proprioceptive_updater_interface_<UpdaterInterfaceAngularSpeed>(
-    node, "angular_speed_updater");
-  add_position_updater_interface_(node, "position_updater");
-  add_range_updater_interface_(node, "range_updater");
+    node, "angular_speed_updater", "angular_speed");
+  add_position_updater_interface_(
+    node, "position_updater", "leader_position");
+  add_range_updater_interface_(
+    node, "range_updater", "range");
   make_results_(node);
 }
 
@@ -73,11 +77,12 @@ void R2HLocalisationFilter::make_results_(std::shared_ptr<rclcpp::Node> node)
 template<typename Interface>
 void R2HLocalisationFilter::add_proprioceptive_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
-  const std::string & updater_name)
+  const std::string & updater_name,
+  const std::string & topic_name)
 {
   declare_proprioceptive_updater_parameters(node, updater_name);
 
-  if (!get_updater_topic_name(node, updater_name).empty()) {
+  if (get_updater_minimal_rate(node, updater_name) != 0) {
 
     using Updater = typename Interface::Updater;
     auto updater = make_proprioceptive_updater<Updater>(
@@ -86,7 +91,7 @@ void R2HLocalisationFilter::add_proprioceptive_updater_interface_(
 
     auto plugin = make_updater_interface<Interface>(
       node,
-      updater_name,
+      topic_name,
       filter_,
       std::move(updater));
 
@@ -100,7 +105,8 @@ void R2HLocalisationFilter::add_proprioceptive_updater_interface_(
 //-----------------------------------------------------------------------------
 void R2HLocalisationFilter::add_range_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
-  const std::string & updater_name)
+  const std::string & updater_name,
+  const std::string & topic_name)
 {
   declare_exteroceptive_updater_parameters(node, updater_name);
   declare_parameter<bool>(node, updater_name, "use_constraints");
@@ -115,7 +121,7 @@ void R2HLocalisationFilter::add_range_updater_interface_(
 
   auto plugin = make_updater_interface<UpdaterInterfaceRange>(
     node,
-    updater_name,
+    topic_name,
     filter_,
     std::move(updater));
 
@@ -127,7 +133,8 @@ void R2HLocalisationFilter::add_range_updater_interface_(
 //-----------------------------------------------------------------------------
 void R2HLocalisationFilter::add_position_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
-  const std::string & updater_name)
+  const std::string & updater_name,
+  const std::string & topic_name)
 {
   declare_exteroceptive_updater_parameters(node, updater_name);
 
@@ -137,7 +144,7 @@ void R2HLocalisationFilter::add_position_updater_interface_(
 
   auto plugin = make_updater_interface<UpdaterInterfacePosition>(
     node,
-    updater_name,
+    topic_name,
     filter_,
     std::move(updater));
 

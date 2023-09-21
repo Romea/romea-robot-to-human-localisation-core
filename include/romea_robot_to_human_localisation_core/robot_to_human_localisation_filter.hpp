@@ -75,15 +75,19 @@ private:
   template<typename Interface>
   void add_proprioceptive_updater_interface_(
     std::shared_ptr<rclcpp::Node> node,
-    const std::string & updater_name);
+    const std::string & updater_name,
+    const std::string & topic_name);
 
   void add_range_updater_interface_(
     std::shared_ptr<rclcpp::Node> node,
-    const std::string & updater_name);
+    const std::string & updater_name,
+    const std::string & topic_name);
+
 
   void add_position_updater_interface_(
     std::shared_ptr<rclcpp::Node> node,
-    const std::string & updater_name);
+    const std::string & updater_name,
+    const std::string & topic_name);
 
 private:
   std::shared_ptr<Filter> filter_;
