@@ -1,8 +1,8 @@
 // Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
 // Add license
 
-#ifndef ROMEA_ROBOT_TO_HUMAN_LOCALISATION__ROBOT_TO_HUMAN_LOCALISATION_HPP_
-#define ROMEA_ROBOT_TO_HUMAN_LOCALISATION__ROBOT_TO_HUMAN_LOCALISATION_HPP_
+#ifndef ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE__ROBOT_TO_HUMAN_LOCALISATION_HPP_
+#define ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE__ROBOT_TO_HUMAN_LOCALISATION_HPP_
 
 // std
 #include <memory>
@@ -22,13 +22,13 @@ namespace romea
 class R2HLocalisation
 {
 public:
-  ROMEA_ROBOT_TO_HUMAN_LOCALISATION_PUBLIC
+  ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE_PUBLIC
   explicit R2HLocalisation(const rclcpp::NodeOptions & options);
 
-  ROMEA_ROBOT_TO_HUMAN_LOCALISATION_PUBLIC
+  ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE_PUBLIC
   virtual ~R2HLocalisation() = default;
 
-  ROMEA_ROBOT_TO_HUMAN_LOCALISATION_PUBLIC
+  ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE_PUBLIC
   rclcpp::node_interfaces::NodeBaseInterface::SharedPtr
   get_node_base_interface() const;
 
@@ -59,4 +59,4 @@ private:
 
 }  // namespace romea
 
-#endif  // ROMEA_ROBOT_TO_HUMAN_LOCALISATION__ROBOT_TO_HUMAN_LOCALISATION_HPP_
+#endif  // ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE__ROBOT_TO_HUMAN_LOCALISATION_HPP_

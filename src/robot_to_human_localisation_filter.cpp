@@ -1,3 +1,6 @@
+// Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+// Add license
+
 // std
 #include <list>
 #include <memory>
@@ -83,7 +86,6 @@ void R2HLocalisationFilter::add_proprioceptive_updater_interface_(
   declare_proprioceptive_updater_parameters(node, updater_name);
 
   if (get_updater_minimal_rate(node, updater_name) != 0) {
-
     using Updater = typename Interface::Updater;
     auto updater = make_proprioceptive_updater<Updater>(
       node,
