@@ -3,12 +3,12 @@ project(romea_robot_to_human_localisation_core)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
- set(CMAKE_C_STANDARD 99)
+  set(CMAKE_C_STANDARD 99)
 endif()
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
- set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -30,26 +30,25 @@ find_package(romea_localisation_msgs REQUIRED)
 find_package(romea_localisation_utils REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
- src/robot_to_human_localisation_filter.cpp
- src/robot_to_human_localisation.cpp)
+  src/robot_to_human_localisation_filter.cpp
+  src/robot_to_human_localisation.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
- $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
- $<INSTALL_INTERFACE:include>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 
 target_compile_definitions(${PROJECT_NAME}
- PRIVATE "ROMEA_ROBOT_TO_HUMAN_LOCALISATION_BUILDING_DLL")
+  PRIVATE "ROMEA_ROBOT_TO_HUMAN_LOCALISATION_BUILDING_DLL")
 
 ament_target_dependencies(${PROJECT_NAME}
- class_loader
- rclcpp
- rclcpp_components
- romea_core_common
- romea_core_localisation
- romea_common_utils
- romea_localisation_msgs
- romea_localisation_utils
- )
+  class_loader
+  rclcpp
+  rclcpp_components
+  romea_core_common
+  romea_core_localisation
+  romea_common_utils
+  romea_localisation_msgs
+  romea_localisation_utils)
 
 if(${ROS_DISTRO} STREQUAL "ROS_GALACTIC")
   rclcpp_components_register_nodes(${PROJECT_NAME} "romea::R2WKalmanLocalisation")
@@ -116,8 +115,8 @@ ament_export_libraries(${PROJECT_NAME})
 #ament_export_targets(${PROJECT_NAME})
 
 install(TARGETS
- ${PROJECT_NAME}
- DESTINATION lib/${PROJECT_NAME})
+  ${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME})
 
 install(
   DIRECTORY launch
