@@ -35,17 +35,17 @@ R2HLocalisationFilter::R2HLocalisationFilter(std::shared_ptr<rclcpp::Node> node)
 {
   make_filter_(node);
   add_proprioceptive_updater_interface_<UpdaterInterfaceTwist>(
-    node, "twist_updater", "twist");
+    node, "twist_updater", "twist", 10);
   add_proprioceptive_updater_interface_<UpdaterInterfaceLinearSpeed>(
-    node, "linear_speed_updater", "twist");
+    node, "linear_speed_updater", "twist", 0);
   add_proprioceptive_updater_interface_<UpdaterInterfaceLinearSpeeds>(
-    node, "linear_speeds_updater", "twist");
+    node, "linear_speeds_updater", "twist", 0);
   add_proprioceptive_updater_interface_<UpdaterInterfaceAngularSpeed>(
-    node, "angular_speed_updater", "angular_speed");
+    node, "angular_speed_updater", "angular_speed", 0);
   add_position_updater_interface_(
-    node, "position_updater", "leader_position");
+    node, "position_updater", "leader_position", 1, "once");
   add_range_updater_interface_(
-    node, "range_updater", "range");
+    node, "range_updater", "range", 10, "always");
   make_results_(node);
 }
 
@@ -65,7 +65,7 @@ void R2HLocalisationFilter::reset()
 //-----------------------------------------------------------------------------
 void R2HLocalisationFilter::make_filter_(std::shared_ptr<rclcpp::Node> node)
 {
-  declare_predictor_parameters(node);
+  declare_predictor_parameters(node, 1.0, 1.0, std::numeric_limits<double>::max());
   declare_filter_parameters<FilterType::KALMAN>(node);
   declare_parameter<double>(node, "predictor", "leader_motion_noise_std");
 
@@ -92,9 +92,10 @@ template<typename Interface>
 void R2HLocalisationFilter::add_proprioceptive_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
   const std::string & updater_name,
-  const std::string & topic_name)
+  const std::string & topic_name,
+  const unsigned int & default_minimal_rate)
 {
-  declare_proprioceptive_updater_parameters(node, updater_name);
+  declare_proprioceptive_updater_parameters(node, updater_name, default_minimal_rate);
 
   if (get_updater_minimal_rate(node, updater_name) != 0) {
     using Updater = typename Interface::Updater;
@@ -119,9 +120,13 @@ void R2HLocalisationFilter::add_proprioceptive_updater_interface_(
 void R2HLocalisationFilter::add_range_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
   const std::string & updater_name,
-  const std::string & topic_name)
+  const std::string & topic_name,
+  const unsigned int & default_minimal_rate,
+  const std::string & default_trigger_mode)
 {
-  declare_exteroceptive_updater_parameters(node, updater_name);
+  declare_exteroceptive_updater_parameters(
+    node, updater_name, default_minimal_rate, default_trigger_mode);
+
   declare_parameter<bool>(node, updater_name, "use_constraints");
 
   auto updater = std::make_unique<UpdaterRange>(
@@ -147,9 +152,12 @@ void R2HLocalisationFilter::add_range_updater_interface_(
 void R2HLocalisationFilter::add_position_updater_interface_(
   std::shared_ptr<rclcpp::Node> node,
   const std::string & updater_name,
-  const std::string & topic_name)
+  const std::string & topic_name,
+  const unsigned int & default_minimal_rate,
+  const std::string & default_trigger_mode)
 {
-  declare_exteroceptive_updater_parameters(node, updater_name);
+  declare_exteroceptive_updater_parameters(
+    node, updater_name, default_minimal_rate, default_trigger_mode);
 
   auto updater = make_exteroceptive_updater<UpdaterPosition, FilterType::KALMAN>(
     node,
@@ -164,7 +172,6 @@ void R2HLocalisationFilter::add_position_updater_interface_(
   updater_interfaces_.push_back(std::move(plugin));
   RCLCPP_INFO_STREAM(node->get_logger(), updater_name + ": started ");
 }
-
 
 //-----------------------------------------------------------------------------
 const R2HLocalisationKFResults & R2HLocalisationFilter::get_results(const Duration & duration)

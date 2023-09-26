@@ -35,7 +35,7 @@ R2HLocalisation::R2HLocalisation(const rclcpp::NodeOptions & options)
   declare_debug(node_);
   declare_log_directory(node_);
   declare_base_footprint_frame_id(node_);
-  declare_publish_rate(node_);
+  declare_publish_rate(node_, 10);
 
   make_filter_();
   make_leader_position_publisher_();
