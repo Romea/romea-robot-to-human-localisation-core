@@ -14,13 +14,9 @@ This package provides robot to human localisation node able to estimate the huma
 
     This topic is provided by imu localisation plugin node and contains robot angular speed data
 
-- localisation/leader_twist(romea_localisation_msgs::msg::ObservationTwist2DStamped)
-
-    This topic is provided by rtls localisation plugin node and contains leader robot twist displacement data
-
 - localisation/position (romea_localisation_msgs::msg::ObservationPosition2DStamped)
 
-    This topic is provided by rtls localisation plugin node and contains rough estimation of leader robot computed by trilateration
+    This topic is provided by rtls localisation plugin node and contains rough estimation of the position of the human leader computed by trilateration
 
 - localisation/range (romea_localisation_msgs::msg::ObservationRangeStamped)
 
@@ -28,7 +24,7 @@ This package provides robot to human localisation node able to estimate the huma
 
 ### 2.2 Published Topics ###
 
-- leader_position (romea_common_msgs::Position2DStamped)
+- leader_position (romea_common_msgs::msg::Position2DStamped)
 
   Position of human leader in the robot localisation reference frame
 
