@@ -1,6 +1,6 @@
 # 1 Overview #
 
-This package provides robot to human localisation node able to estimate the human leader position in using RTLS system
+This package provides robot to human localisation node able to estimate the human leader position by a Kalman filter using observations provided by three localisation plugins: odo ([gitlab](https://gitlab.irstea.fr/romea_ros2/algorithms/localisation/romea_localisation_odo_plugin), [github](https://github.com/Romea/romea-ros2-localisation-odo-plugin)), imu ([gitlab](https://gitlab.irstea.fr/romea_ros2/algorithms/localisation/romea_localisation_imu_plugin), [github](https://github.com/Romea/romea-ros2-localisation-imu-plugin)) and  robot to human rtls plugins ([gitlab](https://gitlab.irstea.fr/romea_ros2/algorithms/localisation/romea_robot_to_human_localisation_rtls_plugin) and [github](https://github.com/Romea/romea-ros2-robot-to-human-localisation-rtls-plugin)). This plugins are used to convert data coming from sensors to observations that can be used by the Kalman filter. 
 
 # 2 Node #
 
@@ -8,19 +8,19 @@ This package provides robot to human localisation node able to estimate the huma
 
 - localisation/twist (romea_localisation_msgs::msg::ObservationTwist2DStamped)
 
-    This topic is provided by odo localisation plugin node and contains robot twist displacement data
+    This topic is provided by odo localisation plugin node and contains robot twist displacement observation deduced from odometry data coming from controller 
 
 - localisation/angular_speed(romea_localisation_msgs::msg::ObservationAngularSpeedStamped)
 
-    This topic is provided by imu localisation plugin node and contains robot angular speed data
+    This topic is provided by imu localisation plugin node and contains robot angular speed observation deduced from data coming from IMU sensor
 
 - localisation/position (romea_localisation_msgs::msg::ObservationPosition2DStamped)
 
-    This topic is provided by rtls localisation plugin node and contains rough estimation of the position of the human leader computed by trilateration
+    This topic is provided by rtls localisation plugin node and contains rough estimation of the position of the human leader computed by trilateration algorithm base on ranging data between rtls transceivers embedded on the robot and the rtls transceiver carried by human leader  
 
 - localisation/range (romea_localisation_msgs::msg::ObservationRangeStamped)
 
-    This topic is provided by rtls localisation plugin node and contains range data between follower and leader rtls transceivers
+    This topic is provided by rtls localisation plugin node and contains range observation deduced from ranging data between rtls transceivers embedded on the robot and the rtls transceiver carried by human leader  
 
 ### 2.2 Published Topics ###
 
