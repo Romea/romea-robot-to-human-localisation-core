@@ -39,19 +39,31 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 class R2HLocalisationFilter
 {
 public:
-  using Filter = KalmanFilter<R2HLocalisationKFMetaState, LocalisationFSMState, Duration>;
-  using UpdaterTwist = LocalisationUpdaterTwist<R2HLocalisationKFMetaState>;
-  using UpdaterLinearSpeed = LocalisationUpdaterLinearSpeed<R2HLocalisationKFMetaState>;
-  using UpdaterLinearSpeeds = LocalisationUpdaterLinearSpeeds<R2HLocalisationKFMetaState>;
-  using UpdaterAngularSpeed = LocalisationUpdaterAngularSpeed<R2HLocalisationKFMetaState>;
-  using UpdaterPosition = R2HLocalisationKFUpdaterLeaderPosition;
-  using UpdaterRange = R2HLocalisationKFUpdaterRange;
-  using Predictor = R2HLocalisationKFPredictor;
-  using Results = R2HLocalisationKFResults;
+  using Filter =
+    core::KalmanFilter<core::R2HLocalisationKFMetaState, core::LocalisationFSMState,
+      core::Duration>;
+  using UpdaterTwist =
+    core::LocalisationUpdaterTwist<core::R2HLocalisationKFMetaState>;
+  using UpdaterLinearSpeed =
+    core::LocalisationUpdaterLinearSpeed<core::R2HLocalisationKFMetaState>;
+  using UpdaterLinearSpeeds =
+    core::LocalisationUpdaterLinearSpeeds<core::R2HLocalisationKFMetaState>;
+  using UpdaterAngularSpeed =
+    core::LocalisationUpdaterAngularSpeed<core::R2HLocalisationKFMetaState>;
+  using UpdaterPosition =
+    core::R2HLocalisationKFUpdaterLeaderPosition;
+  using UpdaterRange =
+    core::R2HLocalisationKFUpdaterRange;
+  using Predictor =
+    core::R2HLocalisationKFPredictor;
+  using Results =
+    core::R2HLocalisationKFResults;
 
   using UpdaterInterface = LocalisationUpdaterInterfaceBase;
   using UpdaterInterfaceTwist = LocalisationUpdaterInterface<Filter, UpdaterTwist,
@@ -75,11 +87,11 @@ public:
   void reset();
 
 public:
-  LocalisationFSMState get_fsm_state();
+  core::LocalisationFSMState get_fsm_state();
 
-  const Results & get_results(const Duration & duration);
+  const Results & get_results(const core::Duration & duration);
 
-  DiagnosticReport make_diagnostic_report(const Duration & duration);
+  core::DiagnosticReport make_diagnostic_report(const core::Duration & duration);
 
 private:
   void make_filter_(std::shared_ptr<rclcpp::Node> node);
@@ -114,6 +126,7 @@ private:
   std::list<std::unique_ptr<UpdaterInterface>> updater_interfaces_;
 };
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE__ROBOT_TO_HUMAN_LOCALISATION_FILTER_HPP_

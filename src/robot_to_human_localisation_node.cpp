@@ -26,7 +26,7 @@ int main(int argc, char * argv[])
 
   rclcpp::NodeOptions options;
   options.arguments(args);
-  auto node = std::make_shared<romea::R2HLocalisation>(options);
+  auto node = std::make_shared<romea::ros2::R2HLocalisation>(options);
 
   rclcpp::executors::MultiThreadedExecutor executor;
   executor.add_node(node->get_node_base_interface());

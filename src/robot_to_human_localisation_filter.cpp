@@ -26,6 +26,8 @@
 namespace romea
 {
 
+namespace ros2
+{
 
 //-----------------------------------------------------------------------------
 R2HLocalisationFilter::R2HLocalisationFilter(std::shared_ptr<rclcpp::Node> node)
@@ -50,7 +52,7 @@ R2HLocalisationFilter::R2HLocalisationFilter(std::shared_ptr<rclcpp::Node> node)
 }
 
 //-----------------------------------------------------------------------------
-LocalisationFSMState R2HLocalisationFilter::get_fsm_state()
+core::LocalisationFSMState R2HLocalisationFilter::get_fsm_state()
 {
   return filter_->getFSMState();
 }
@@ -66,13 +68,13 @@ void R2HLocalisationFilter::reset()
 void R2HLocalisationFilter::make_filter_(std::shared_ptr<rclcpp::Node> node)
 {
   declare_predictor_parameters(node, 1.0, 1.0, std::numeric_limits<double>::max());
-  declare_filter_parameters<FilterType::KALMAN>(node);
+  declare_filter_parameters<core::FilterType::KALMAN>(node);
   declare_parameter<double>(node, "predictor", "leader_motion_noise_std");
 
-  filter_ = make_filter<Filter, FilterType::KALMAN>(node);
+  filter_ = make_filter<Filter, core::FilterType::KALMAN>(node);
 
   auto predictor = std::make_unique<Predictor>(
-    durationFromSecond(get_predictor_maximal_dead_reckoning_elapsed_time(node)),
+    core::durationFromSecond(get_predictor_maximal_dead_reckoning_elapsed_time(node)),
     get_predictor_maximal_dead_reckoning_travelled_distance(node),
     get_predictor_maximal_circular_error_probable(node),
     get_parameter<double>(node, "predictor", "leader_motion_noise_std"));
@@ -84,7 +86,7 @@ void R2HLocalisationFilter::make_filter_(std::shared_ptr<rclcpp::Node> node)
 //-----------------------------------------------------------------------------
 void R2HLocalisationFilter::make_results_(std::shared_ptr<rclcpp::Node> node)
 {
-  results_ = make_results<Results, FilterType::KALMAN>(node);
+  results_ = make_results<Results, core::FilterType::KALMAN>(node);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +134,7 @@ void R2HLocalisationFilter::add_range_updater_interface_(
   auto updater = std::make_unique<UpdaterRange>(
     updater_name,
     get_updater_minimal_rate(node, updater_name),
-    toTriggerMode(get_updater_trigger_mode(node, updater_name)),
+    core::toTriggerMode(get_updater_trigger_mode(node, updater_name)),
     get_updater_mahalanobis_distance_rejection_threshold(node, updater_name),
     get_log_filename(node, updater_name),
     get_parameter<bool>(node, updater_name, "use_constraints"));
@@ -159,7 +161,7 @@ void R2HLocalisationFilter::add_position_updater_interface_(
   declare_exteroceptive_updater_parameters(
     node, updater_name, default_minimal_rate, default_trigger_mode);
 
-  auto updater = make_exteroceptive_updater<UpdaterPosition, FilterType::KALMAN>(
+  auto updater = make_exteroceptive_updater<UpdaterPosition, core::FilterType::KALMAN>(
     node,
     updater_name);
 
@@ -174,7 +176,8 @@ void R2HLocalisationFilter::add_position_updater_interface_(
 }
 
 //-----------------------------------------------------------------------------
-const R2HLocalisationKFResults & R2HLocalisationFilter::get_results(const Duration & duration)
+const core::R2HLocalisationKFResults & R2HLocalisationFilter::get_results(
+  const core::Duration & duration)
 {
   // results_->setDuration(duration);
   filter_->getCurrentState(duration, results_.get());
@@ -182,9 +185,9 @@ const R2HLocalisationKFResults & R2HLocalisationFilter::get_results(const Durati
 }
 
 //-----------------------------------------------------------------------------
-DiagnosticReport R2HLocalisationFilter::make_diagnostic_report(const Duration & stamp)
+core::DiagnosticReport R2HLocalisationFilter::make_diagnostic_report(const core::Duration & stamp)
 {
-  DiagnosticReport report;
+  core::DiagnosticReport report;
   for (auto & interface_ptr : updater_interfaces_) {
     interface_ptr->heartbeat_callback(stamp);
     report += interface_ptr->get_report();
@@ -193,4 +196,5 @@ DiagnosticReport R2HLocalisationFilter::make_diagnostic_report(const Duration & 
   return report;
 }
 
+}  // namespace ros2
 }  // namespace romea

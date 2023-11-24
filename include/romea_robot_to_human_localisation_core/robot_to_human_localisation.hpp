@@ -29,6 +29,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 class R2HLocalisation
 {
@@ -63,11 +65,12 @@ private:
   std::shared_ptr<rclcpp::TimerBase> timer_;
   std::unique_ptr<R2HLocalisationFilter> filter_;
 
-  std::shared_ptr<StampedPublisherBase<Position2D>> leader_position_publisher_;
-  std::shared_ptr<StampedPublisherBase<DiagnosticReport>> diagnostic_publisher_;
-  std::shared_ptr<PublisherBase<LocalisationFSMState>> status_publisher_;
+  std::shared_ptr<StampedPublisherBase<core::Position2D>> leader_position_publisher_;
+  std::shared_ptr<StampedPublisherBase<core::DiagnosticReport>> diagnostic_publisher_;
+  std::shared_ptr<PublisherBase<core::LocalisationFSMState>> status_publisher_;
 };
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ROMEA_ROBOT_TO_HUMAN_LOCALISATION_CORE__ROBOT_TO_HUMAN_LOCALISATION_HPP_
