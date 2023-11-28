@@ -51,7 +51,7 @@ ament_target_dependencies(${PROJECT_NAME}
   romea_localisation_utils)
 
 if(${ROS_DISTRO} STREQUAL "ROS_GALACTIC")
-  rclcpp_components_register_nodes(${PROJECT_NAME} "romea::R2WKalmanLocalisation")
+  rclcpp_components_register_nodes(${PROJECT_NAME} "romea::ros2::R2WKalmanLocalisation")
 
   add_executable(robot_to_human_localisation_node
     src/robot_to_human_localisation_filter.cpp
